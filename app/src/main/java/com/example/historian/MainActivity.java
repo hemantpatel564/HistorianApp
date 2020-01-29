@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -27,6 +26,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class MainActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback
 {
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
     private ActionBarDrawerToggle actionBarDrawerToggle;
     public Button find;
     GoogleMap map;
+    FragmentTransaction fragmentTransaction;
+    FragmentManager fragmentManager;
 
     // current Location
     Location currentlocation;
@@ -56,6 +59,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
             }
         });
 
+
         drawerLayout = (DrawerLayout) findViewById(R.id.ham);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
@@ -63,6 +67,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         NavigationView navigationView = (NavigationView) findViewById(R.id.navView);
         navigationView.setNavigationItemSelectedListener(this);
+
 
 
 //        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -74,29 +79,26 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
 
     }
 
-    private void fetchlastlocation()
-    {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-        {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},REQUEST_CODE);
+    private void fetchlastlocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
             return;
+
         }
-
-        Task<Location> task = fusedLocationProviderClient.getLastLocation();
-        task.addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location  != null)
-                {
-                    currentlocation = location;
-                   // Toast.makeText(getApplicationContext(),currentlocation.getLatitude()+""+currentlocation.getLongitude(),Toast.LENGTH_SHORT).show();
-                    SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-                    supportMapFragment.getMapAsync(MainActivity.this);
+            Task<Location> task = fusedLocationProviderClient.getLastLocation();
+            task.addOnSuccessListener(new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if (location != null) {
+                        currentlocation = location;
+                        // Toast.makeText(getApplicationContext(),currentlocation.getLatitude()+""+currentlocation.getLongitude(),Toast.LENGTH_SHORT).show();
+                        SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                        supportMapFragment.getMapAsync(MainActivity.this);
+                       }
                 }
-            }
-        });
+            });
 
-    }
+        }
 
 
 
@@ -114,12 +116,47 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int id = menuItem.getItemId();
+
         if (id == R.id.menupage) {
 
-            Toast.makeText(this, "This is Menu Page", Toast.LENGTH_SHORT).show();
+            fragmentManager = getSupportFragmentManager();
+            fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.map,new MenuPage());
+            fragmentTransaction.commit();
+            //getSupportFragmentManager().beginTransaction().replace(R.id.fragcontainer,new MenuPage()).commit();
 
+           // Toast.makeText(this, "This is Menu Page", Toast.LENGTH_SHORT).show()
         }
-        return false;
+//        if(id == R.id.profile)
+//        {
+//            fragmentManager = getSupportFragmentManager();
+//            fragmentTransaction = fragmentManager.beginTransaction();
+//            fragmentTransaction.replace(R.id.ham,new Profile());
+//            fragmentTransaction.commit();
+//
+//        }
+//
+//        if(id == R.id.payment)
+//        {
+//            fragmentManager = getSupportFragmentManager();
+//            fragmentTransaction = fragmentManager.beginTransaction();
+//            fragmentTransaction.replace(R.id.ham,new PaymentPage());
+//            fragmentTransaction.commit();
+//
+//        }
+//        if(id == R.id.museum)
+//        {
+//            fragmentManager = getSupportFragmentManager();
+//            fragmentTransaction = fragmentManager.beginTransaction();
+//            fragmentTransaction.replace(R.id.ham,new MuseumNearby());
+//            fragmentTransaction.commit();
+//
+//        }
+
+
+
+        //drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
 
     }
 
@@ -159,4 +196,5 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
                 break;
         }
     }
+
 }
