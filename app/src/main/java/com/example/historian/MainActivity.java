@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -68,7 +69,10 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         NavigationView navigationView = (NavigationView) findViewById(R.id.navView);
         navigationView.setNavigationItemSelectedListener(this);
 
-
+//        fragmentManager = getSupportFragmentManager();
+//        fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.replace(R.id.map,new MenuPage());
+//
 
 //        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 //        mapFragment.getMapAsync(this);
@@ -115,47 +119,17 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
     }
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        int id = menuItem.getItemId();
-
-        if (id == R.id.menupage) {
-
-            fragmentManager = getSupportFragmentManager();
-            fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.map,new MenuPage());
-            fragmentTransaction.commit();
-            //getSupportFragmentManager().beginTransaction().replace(R.id.fragcontainer,new MenuPage()).commit();
-
-           // Toast.makeText(this, "This is Menu Page", Toast.LENGTH_SHORT).show()
+        switch (menuItem.getItemId()){
+            case R.id.menupage:
+                getSupportFragmentManager().beginTransaction().replace(R.id.ham,new MenuPage()).addToBackStack(null).commit();
+                break;
         }
-//        if(id == R.id.profile)
-//        {
-//            fragmentManager = getSupportFragmentManager();
-//            fragmentTransaction = fragmentManager.beginTransaction();
-//            fragmentTransaction.replace(R.id.ham,new Profile());
-//            fragmentTransaction.commit();
-//
-//        }
-//
-//        if(id == R.id.payment)
-//        {
-//            fragmentManager = getSupportFragmentManager();
-//            fragmentTransaction = fragmentManager.beginTransaction();
-//            fragmentTransaction.replace(R.id.ham,new PaymentPage());
-//            fragmentTransaction.commit();
-//
-//        }
-//        if(id == R.id.museum)
-//        {
-//            fragmentManager = getSupportFragmentManager();
-//            fragmentTransaction = fragmentManager.beginTransaction();
-//            fragmentTransaction.replace(R.id.ham,new MuseumNearby());
-//            fragmentTransaction.commit();
-//
-//        }
 
 
 
-        //drawerLayout.closeDrawer(GravityCompat.START);
+
+
+        drawerLayout.closeDrawer(GravityCompat.START);
         return true;
 
     }
