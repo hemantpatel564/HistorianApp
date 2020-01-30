@@ -124,11 +124,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
                 getSupportFragmentManager().beginTransaction().replace(R.id.ham,new MenuPage()).addToBackStack(null).commit();
                 break;
         }
-
-
-
-
-
+        
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
 
