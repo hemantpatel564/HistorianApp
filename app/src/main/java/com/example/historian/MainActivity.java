@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()){
-            case R.id.menupage:
+            case R.id.menupage1:
                 getSupportFragmentManager().beginTransaction().replace(R.id.ham,new MenuPage()).addToBackStack(null).commit();
                 break;
         }
