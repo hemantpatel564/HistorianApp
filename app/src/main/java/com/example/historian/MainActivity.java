@@ -1,10 +1,10 @@
 package com.example.historian;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -30,8 +30,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-public class MainActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback
-{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -39,23 +38,24 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
     GoogleMap map;
     FragmentTransaction fragmentTransaction;
     FragmentManager fragmentManager;
-
     // current Location
     Location currentlocation;
     FusedLocationProviderClient fusedLocationProviderClient;
-
-    private  static final int REQUEST_CODE = 101;
+    private static final int REQUEST_CODE = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        find = (Button)findViewById(R.id.find);
+        find = (Button) findViewById(R.id.find);
         find.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Toast.makeText(getBaseContext(), "Button Clicked!" , Toast.LENGTH_SHORT ).show();
+if (ActivityCompat.checkSelfPermission(MainActivity.this.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+    return;
+}
                 fetchlastlocation();
             }
         });
@@ -84,29 +84,19 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
     }
 
     private void fetchlastlocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
-            return;
-
-        }
-            Task<Location> task = fusedLocationProviderClient.getLastLocation();
-            task.addOnSuccessListener(new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    if (location != null) {
-                        currentlocation = location;
-                        // Toast.makeText(getApplicationContext(),currentlocation.getLatitude()+""+currentlocation.getLongitude(),Toast.LENGTH_SHORT).show();
-                        SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-                        supportMapFragment.getMapAsync(MainActivity.this);
-                       }
+        Task<Location> task = fusedLocationProviderClient.getLastLocation();
+        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+                    currentlocation = location;
+                    SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                    supportMapFragment.getMapAsync(MainActivity.this);
                 }
-            });
+            }
+        });
 
-        }
-
-
-
-
+    }
 
 
     @Override
@@ -117,32 +107,37 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         }
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        switch (menuItem.getItemId()){
-            case R.id.menupage1:
-                getSupportFragmentManager().beginTransaction().replace(R.id.ham,new MenuPage()).addToBackStack(null).commit();
-                break;
+
+        int id = menuItem.getItemId();
+        if (id == R.id.menupage) {
+            Intent intent = new Intent(MainActivity.this, MenuPage.class);
+            startActivity(intent);
+
+
+
         }
-        
+
         drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
+        return false;
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.action_menu,menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.action_menu, menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        LatLng latLng = new LatLng(currentlocation.getLatitude(),currentlocation.getLongitude());
+        LatLng latLng = new LatLng(currentlocation.getLatitude(), currentlocation.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("I Am Here!");
         googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,5));
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 5));
         googleMap.addMarker(markerOptions);
 
 //        map = googleMap;
@@ -156,11 +151,9 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode)
-        {
+        switch (requestCode) {
             case REQUEST_CODE:
-                if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     fetchlastlocation();
                 }
                 break;

@@ -2,9 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menupage1"
-        android:title="Menu Page">
+        android:id="@+id/menupage"
+        android:title="Menu Page" />
 
-    </item>
+
+<!--    <item-->
+<!--        android:id="@+id/menu"-->
+<!--        android:title="Menu Page">-->
+<!--    </item>-->
+
 
 </menu>
