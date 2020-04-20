@@ -19,7 +19,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-       
+
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
@@ -39,9 +39,12 @@
         <activity android:name=".Profile"/>
         <activity android:name=".Payment"/>
         <activity android:name=".Listitem"/>
-        <activity android:name=".Demo"/>
+        <activity android:name=".MuseumActivity"/>
         <activity android:name=".DatabaseHelper"/>
         <activity android:name=".MuseumsNearBy"/>
+        <activity android:name="Pagereviewlistitem"
+
+            />
 
     </application>
 

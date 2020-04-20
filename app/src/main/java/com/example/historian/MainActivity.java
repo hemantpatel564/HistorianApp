@@ -32,8 +32,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
-    private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private static final int REQUEST_CODE = 101;
     public Button find;
     GoogleMap map;
     FragmentTransaction fragmentTransaction;
@@ -41,32 +40,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // current Location
     Location currentlocation;
     FusedLocationProviderClient fusedLocationProviderClient;
-    private static final int REQUEST_CODE = 101;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        find = (Button) findViewById(R.id.find);
+        find = findViewById(R.id.find);
         find.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-if (ActivityCompat.checkSelfPermission(MainActivity.this.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
-    return;
-}
+                if (ActivityCompat.checkSelfPermission(MainActivity.this.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+                    return;
+                }
                 fetchlastlocation();
             }
         });
-
-
-        drawerLayout = (DrawerLayout) findViewById(R.id.ham);
+        drawerLayout = findViewById(R.id.ham);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navView);
+        NavigationView navigationView = findViewById(R.id.navView);
         navigationView.setNavigationItemSelectedListener(this);
 
 //        fragmentManager = getSupportFragmentManager();
@@ -117,7 +115,6 @@ if (ActivityCompat.checkSelfPermission(MainActivity.this.getApplicationContext()
             startActivity(intent);
 
 
-
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
@@ -133,19 +130,11 @@ if (ActivityCompat.checkSelfPermission(MainActivity.this.getApplicationContext()
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
         LatLng latLng = new LatLng(currentlocation.getLatitude(), currentlocation.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("I Am Here!");
         googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 5));
         googleMap.addMarker(markerOptions);
-
-//        map = googleMap;
-//        LatLng Toronto = new LatLng(43.660063, -79.382873);
-//        map.addMarker(new MarkerOptions().position(Toronto).title("Toronto"));
-//        map.moveCamera(CameraUpdateFactory.newLatLng(Toronto));
-
-
     }
 
 
